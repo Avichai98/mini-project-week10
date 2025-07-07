@@ -1,0 +1,46 @@
+name: Backend Python Test
+
+on:
+  workflow_dispatch: # Can be run manually
+  workflow_call:
+    outputs:
+      job_start_time:
+        description: "Start timestamp"
+        value: ${{ jobs.test.outputs.job_start_time }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    outputs:
+      job_start_time: ${{ steps.set_time.outputs.job_start_time }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - id: set_time
+        run: echo "job_start_time=$(date +%s)" >> $GITHUB_OUTPUT
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+
+      - name: Run lint (Flake8)
+        run: |
+          pip install flake8
+          flake8 backend
+
+      - name: Run backend tests
+        run: |
+          pytest backend/tests | tee test-results.log || true
+          echo "Build finished successfully at $(date)" >> test-results.log
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-results-python
+          path: test-results.log

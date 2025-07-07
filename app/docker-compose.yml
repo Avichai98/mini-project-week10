@@ -1,0 +1,50 @@
+version: '3.9'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: my_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGO_URI=mongodb://my_mongo:27017/mydatabase
+    restart: always
+    depends_on:
+      - mongo
+    networks:
+      - mynet
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: my_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_WELCOME_MESSAGE=Welcome to the Names List App!
+    restart: always
+    depends_on:
+      - backend
+    networks:
+      - mynet
+
+  mongo:
+    image: mongo:latest
+    container_name: my_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    restart: always
+    networks:
+      - mynet
+
+volumes:
+  mongodb_data:
+    
+
+networks:
+  mynet:
+    driver: bridge

@@ -1,0 +1,28 @@
+
+# Ignore Terraform state files
+*.tfstate
+*.tfstate.backup
+
+# Ignore Terraform hidden directory
+.terraform/
+
+# Optional: Ignore override files (if you use them)
+*.tfvars
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Ignore crash logs
+crash.log
+
+# Ignore sensitive environment files
+.env
+*.env
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE files (example: VSCode)
+.vscode/

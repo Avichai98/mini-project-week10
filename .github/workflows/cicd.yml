@@ -1,0 +1,74 @@
+name: NamesList CICD
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - prod
+
+jobs:
+  backend-test:
+    uses: ./.github/workflows/backend-test.yml
+
+  frontend-test:
+    uses: ./.github/workflows/frontend-test.yml
+  
+  backend-docker-build:
+    uses: ./.github/workflows/docker-build-backend.yml
+    with:
+      tag: ${{ github.sha }}
+    secrets: inherit
+
+  frontend-docker-build:
+    uses: ./.github/workflows/docker-build-frontend.yml
+    with:
+      tag: ${{ github.sha }}
+    secrets: inherit
+
+  terraform_remote-state:
+    uses: ./.github/workflows/terraform-remote-state.yml
+    with:
+      environment: ${{ inputs.environment }}
+    secrets: inherit
+
+  terraform:
+    uses: ./.github/workflows/terraform.yml
+    with:
+      environment: ${{ inputs.environment }}
+    secrets: inherit
+
+  deploy:
+    uses: ./.github/workflows/deploy-app.yml
+    with:
+      public_ip: ${{ needs.terraform.outputs.public_ip }}
+      environment: ${{ inputs.environment }}
+    secrets: inherit
+
+  backend-notify:
+    needs: [backend-test, deploy]
+    if: always()
+    uses: ./.github/workflows/notify-backend.yml
+    with:
+      job_start_time: ${{ needs.backend-test.outputs.job_start_time }}
+      test_status: ${{ needs.backend-test.result }}
+      build_status: ${{ needs.backend-docker-build.result }}
+    secrets: inherit
+
+  frontend-notify:
+    needs: [frontend-test, deploy]
+    if: always()
+    uses: ./.github/workflows/notify-frontend.yml
+    with:
+      job_start_time: ${{ needs.frontend-test.outputs.job_start_time }}
+      test_status: ${{ needs.frontend-test.result }}
+      build_status: ${{ needs.frontend-docker-build.result }}
+    secrets: inherit

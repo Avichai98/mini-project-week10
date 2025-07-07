@@ -1,0 +1,53 @@
+name: Terraform Remote State Bootstrap
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+    secrets:
+      AZURE_CREDENTIALS:
+        required: true
+
+jobs:
+  remote_state:
+    name: Bootstrap Remote State - ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+
+    env:
+      TF_VAR_environment: ${{ inputs.environment }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.5.7
+
+      - name: Set Azure Credentials as ENV
+        run: |
+          echo '${{ secrets.AZURE_CREDENTIALS }}' > sp.json
+          echo "ARM_CLIENT_ID=$(jq -r .clientId sp.json)" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=$(jq -r .clientSecret sp.json)" >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=$(jq -r .subscriptionId sp.json)" >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=$(jq -r .tenantId sp.json)" >> $GITHUB_ENV
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: infrastructure/bootstrap/${{ inputs.environment }}
+
+      - name: Terraform Plan - Create Remote State Infra
+        run: terraform plan
+        working-directory: infrastructure/bootstrap/${{ inputs.environment }}
+
+      - name: Terraform Apply - Create Remote State Infra
+        run: terraform apply -auto-approve
+        working-directory: infrastructure/bootstrap/${{ inputs.environment }}
