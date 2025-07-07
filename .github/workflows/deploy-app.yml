@@ -7,6 +7,10 @@ on:
         description: 'Public IP of the Azure VM'
         required: true
         type: string
+      environment:
+        description: 'Deployment environment (e.g., dev, prod)'
+        required: true
+        type: string
     secrets:
       AZURE_PRIVATE_KEY:
         required: true
