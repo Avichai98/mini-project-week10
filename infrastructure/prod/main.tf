@@ -2,8 +2,8 @@ terraform {
   backend "azurerm" {
     resource_group_name  = "remote_state_RG_prod"
     storage_account_name = "avichai98saprod"
-    container_name       = "terraformprod"
-    key                  = "terraformprod.tfstate"
+    container_name       = "remotecontainerprod"
+    key                  = "remotecontainerprod.tfstate"
   }
 }
 
