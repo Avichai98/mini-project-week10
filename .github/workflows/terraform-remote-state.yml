@@ -77,18 +77,18 @@ jobs:
             fi
           fi
 
-    echo "Checking if Storage Container is in state..."
-    if terraform state list | grep -q "azurerm_storage_container.terraform"; then
-      echo "Storage Container already in state"
-    else
-      echo "Checking if Storage Container exists in Azure..."
-      if az storage container exists --account-name avichai98sa${{ inputs.environment }} --name remotecontainer${{ inputs.environment }} --auth-mode login --output tsv | grep -q true; then
-        echo "Importing Storage Container..."
-        terraform import azurerm_storage_container.terraform "https://avichai98sa${{ inputs.environment }}.blob.core.windows.net/remotecontainer${{ inputs.environment }}"
-      else
-        echo "Storage Container does not exist in Azure, skipping import."
-      fi
-    fi
+          echo "Checking if Storage Container is in state..."
+          if terraform state list | grep -q "azurerm_storage_container.terraform"; then
+            echo "Storage Container already in state"
+          else
+            echo "Checking if Storage Container exists in Azure..."
+            if az storage container exists --account-name avichai98sa${{ inputs.environment }} --name remotecontainer${{ inputs.environment }} --auth-mode login --output tsv | grep -q true; then
+              echo "Importing Storage Container..."
+              terraform import azurerm_storage_container.terraform "https://avichai98sa${{ inputs.environment }}.blob.core.windows.net/remotecontainer${{ inputs.environment }}"
+            else
+              echo "Storage Container does not exist in Azure, skipping import."
+            fi
+          fi
   working-directory: infrastructure/bootstrap/${{ inputs.environment }}
 
 
