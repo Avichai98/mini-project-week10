@@ -49,6 +49,16 @@ jobs:
         run: terraform init
         working-directory: infrastructure/bootstrap/${{ inputs.environment }}
 
+      - name: Terraform Import RG (if not exists)
+        run: |
+          if terraform state list | grep -q "azurerm_resource_group.rg"; then
+            echo "Resource group already in state - skipping import."
+          else
+            echo "Importing resource group into Terraform state."
+            terraform import azurerm_resource_group.rg "/subscriptions/${{ env.ARM_SUBSCRIPTION_ID }}/resourceGroups/remote_state_RG_${{ inputs.environment }}"
+          fi
+        working-directory: infrastructure/bootstrap/${{ inputs.environment }}
+
       - name: Terraform Plan - Create Remote State Infra
         run: terraform plan
         working-directory: infrastructure/bootstrap/${{ inputs.environment }}
