@@ -96,9 +96,19 @@ jobs:
       run: terraform apply -auto-approve
       working-directory: infrastructure/${{ inputs.environment }}
 
-    - name: Output Public IP
-      id: output
+    - name: Get resource group and VM name from Terraform outputs
+      id: get_outputs
       run: |
-        PUBLIC_IP=$(terraform output -raw public_ip_address 2>/dev/null)
-        echo "public_ip_address=$PUBLIC_IP" >> $GITHUB_OUTPUT
-      working-directory: infrastructure/${{ inputs.environment }}
+        echo "resource_group_name=$(terraform output -raw resource_group_name)" >> $GITHUB_ENV
+        echo "vm_name=$(terraform output -raw vm_name)" >> $GITHUB_ENV
+
+    - name: Get public IP using Azure CLI
+      run: |
+        public_ip=$(az vm show \
+          --resource-group "$resource_group_name" \
+          --name "$vm_name" \
+          --show-details \
+          --query "publicIps" \
+          --output tsv)
+        echo "public_ip=$public_ip"
+        echo "public_ip_address=$public_ip" >> $GITHUB_OUTPUT
