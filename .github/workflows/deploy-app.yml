@@ -41,4 +41,4 @@ jobs:
 
     - name: Run deployment.sh on VM
       run: |
-        ssh -i ~/.ssh/id_rsa ${{ secrets.AZURE_USER }}@${{ inputs.public_ip_address }} "chmod +x ~/deployment.sh && ~/deployment.sh ${{ inputs.public_ip_address }} ~/.ssh/id_rsa" 
+        ssh -i ~/.ssh/id_rsa ${{ secrets.AZURE_USER }}@${{ inputs.public_ip_address }} "chmod +x ~/deployment.sh && ~/deployment.sh" 
