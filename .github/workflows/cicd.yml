@@ -51,7 +51,7 @@ jobs:
     needs: [terraform]
     uses: ./.github/workflows/deploy-app.yml
     with:
-      public_ip: ${{ needs.terraform.outputs.public_ip }}
+      public_ip_address: ${{ needs.terraform.outputs.public_ip_address }}
       environment: ${{ github.event.inputs.environment || 'dev' }}
     secrets: inherit
 

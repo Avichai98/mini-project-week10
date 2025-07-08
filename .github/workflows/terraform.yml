@@ -11,9 +11,9 @@ on:
       ssh_public_key:
         description: "SSH Public Key for VM Access"
         value: ${{ jobs.terraform.outputs.ssh_public_key }}
-      public_ip:
+      public_ip_address:
         description: "Public IP of the provisioned VM"
-        value: ${{ jobs.terraform.outputs.public_ip }}
+        value: ${{ jobs.terraform.outputs.public_ip_address }}
     secrets:
       AZURE_CREDENTIALS:
         required: true
@@ -100,5 +100,5 @@ jobs:
       id: output
       run: |
         PUBLIC_IP=$(terraform output -raw public_ip_address | head -1)
-        echo "public_ip=$PUBLIC_IP" >>     $GITHUB_OUTPUT
+        echo "public_ip_address=$PUBLIC_IP" >>     $GITHUB_OUTPUT
       working-directory: infrastructure/${{ inputs.environment }}
