@@ -29,7 +29,7 @@ jobs:
 
     - name: Setup SSH key
       run: |
-        mkdir -p ~/vm/.ssh
+        mkdir -p ~/.ssh
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H ${{ inputs.public_ip_address }} >> ~/.ssh/known_hosts
