@@ -12,7 +12,7 @@ on:
         required: true
         type: string
     secrets:
-      AZURE_PRIVATE_KEY:
+      SSH_PRIVATE_KEY:
         required: true
         description: 'SSH Private Key for Azure VM'
       AZURE_USER:
@@ -30,7 +30,7 @@ jobs:
     - name: Setup SSH key
       run: |
         mkdir -p ~/vm/.ssh
-        echo "${{ secrets.AZURE_PRIVATE_KEY }}" > ~/vm/.ssh/id_rsa
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/vm/.ssh/id_rsa
         chmod 600 ~/vm/.ssh/id_rsa
         ssh-keyscan -H ${{ inputs.public_ip }} >> ~/vm/.ssh/known_hosts
 
