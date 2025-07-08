@@ -70,16 +70,22 @@ jobs:
       run: terraform init
       working-directory: infrastructure/${{ inputs.environment }}
 
-    - name: Terraform Import RG
+    - name: Terraform Import RG if exists in Azure
       run: |
-        if terraform state list | grep -q "azurerm_resource_group.rg"; then
-            echo "Resource group already in state - skipping import."
+        echo "Checking if resource group already in Terraform state..."
+        if terraform state list | grep -q "module.resource_group.azurerm_resource_group.rg"; then
+          echo "Resource group already in state — skipping import."
         else
-          echo "Importing resource group into Terraform state."
-          terraform import module.resource_group.azurerm_resource_group.rg "/subscriptions/${{ env.ARM_SUBSCRIPTION_ID }}/resourceGroups/mini_project_RG_${{ inputs.environment }}"
+          echo "Checking if resource group exists in Azure..."
+          if az group show --name mini_project_RG_${{ inputs.environment }} --output none 2>/dev/null; then
+            echo "Importing existing resource group into Terraform state."
+            terraform import module.resource_group.azurerm_resource_group.rg "/subscriptions/${{ env.ARM_SUBSCRIPTION_ID }}/resourceGroups/mini_project_RG_${{ inputs.environment }}"
+          else
+            echo "Resource group does not exist in Azure — skipping import."
+          fi
         fi
       working-directory: infrastructure/${{ inputs.environment }}
-
+      
     - name: Terraform Plan
       run: terraform plan
       working-directory: infrastructure/${{ inputs.environment }}
