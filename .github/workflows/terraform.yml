@@ -39,9 +39,10 @@ jobs:
     - name: Derive SSH Public Key
       id: ssh
       run: |
-        ssh-keygen -y -f ~/vm/.ssh/id_rsa > ~/vm/.ssh/id_rsa.pub
-        echo "ssh_public_key=$(cat ~/vm/.ssh/id_rsa.pub)" >> "$GITHUB_OUTPUT"
-        echo "TF_VAR_ssh_public_key=$ssh_public_key" >> "$GITHUB_ENV"
+        ssh-keygen -y -f ~/vm/.ssh/id_rsa >     ~/vm/.ssh/id_rsa.pub
+        export SSH_PUB_KEY=$(cat ~/vm/.ssh/    id_rsa.pub)
+        echo "ssh_public_key=$SSH_PUB_KEY" >>     "$GITHUB_OUTPUT"
+        echo "TF_VAR_ssh_public_key=$SSH_PUB_KEY" >>     "$GITHUB_ENV"
 
     - name: Azure Login
       uses: azure/login@v2
