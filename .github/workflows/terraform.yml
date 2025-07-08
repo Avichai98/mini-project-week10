@@ -98,4 +98,4 @@ jobs:
 
     - name: Output Public IP
       id: output
-      run: echo "public_ip=$(terraform output -raw public_ip)" >> "$GITHUB_OUTPUT"
+      run: echo "public_ip=$(terraform output -raw public_ip_address)" >> "$GITHUB_OUTPUT"
