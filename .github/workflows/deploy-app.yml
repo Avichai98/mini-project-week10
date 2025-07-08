@@ -36,9 +36,9 @@ jobs:
 
     - name: Copy script and app to VM
       run: |
-        scp -i ~/vm/.ssh/id_rsa scripts/install_and_deploy.sh ${{ secrets.AZURE_USER }}@${{ inputs.public_ip_address }}:/home/${{ secrets.AZURE_USER }}/
+        scp -i ~/vm/.ssh/id_rsa scripts/deployment.sh ${{ secrets.AZURE_USER }}@${{ inputs.public_ip_address }}:/home/${{ secrets.AZURE_USER }}/
         scp -i ~/vm/.ssh/id_rsa -r ./app ${{ secrets.AZURE_USER }}@${{ inputs.public_ip_address }}:/home/${{ secrets.AZURE_USER }}/
 
-    - name: Run install_and_deploy.sh on VM
+    - name: Run deployment.sh on VM
       run: |
-        ssh -i ~/.ssh/id_rsa ${{ secrets.AZURE_USER }}@${{ inputs.public_ip_address }} "chmod +x ~/install_and_deploy.sh && ~/install_and_deploy.sh ${{ inputs.public_ip_address }}"
+        ssh -i ~/.ssh/id_rsa ${{ secrets.AZURE_USER }}@${{ inputs.public_ip_address }} "chmod +x ~/deployment.sh && ~/deployment.sh ${{ inputs.public_ip_address }}"

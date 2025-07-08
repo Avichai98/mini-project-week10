@@ -51,10 +51,10 @@ install_and_run_app() {
       exit 1
     fi
 
-    echo "🚀 Running Docker Compose..."
+    echo "Running Docker Compose..."
     cd /home/adminuser/app
     sudo docker compose down || true
-    sudo docker compose up -d
+    sudo docker compose up -d --build
 EOF
 }
 
