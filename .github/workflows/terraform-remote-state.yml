@@ -39,6 +39,7 @@ jobs:
           echo "ARM_CLIENT_SECRET=$(jq -r .clientSecret sp.json)" >> $GITHUB_ENV
           echo "ARM_SUBSCRIPTION_ID=$(jq -r .subscriptionId sp.json)" >> $GITHUB_ENV
           echo "ARM_TENANT_ID=$(jq -r .tenantId sp.json)" >> $GITHUB_ENV
+          echo "TF_VAR_subscription_id=$(jq -r .subscriptionId sp.json)" >> $GITHUB_ENV
 
       - name: Terraform Init
         run: terraform init
