@@ -5,7 +5,6 @@ log_file="deployment_log.md"
 exec > >(tee -a "$log_file") 2>&1
 
 REMOTE_USER="adminuser"
-SSH_KEY_PATH="$HOME/.ssh/terraform"
 
 # Check if public IP was passed as argument
 if [ -z "$1" ]; then
@@ -14,6 +13,7 @@ if [ -z "$1" ]; then
 fi
 
 PUBLIC_IP="$1"
+SSH_KEY_PATH="${2:-$HOME/.ssh/terraform}"
 
 echo "Starting deployment on $PUBLIC_IP"
 
