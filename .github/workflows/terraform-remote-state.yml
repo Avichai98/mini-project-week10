@@ -89,9 +89,7 @@ jobs:
               echo "Storage Container does not exist in Azure, skipping import."
             fi
           fi
-  working-directory: infrastructure/bootstrap/${{ inputs.environment }}
-
-
+        working-directory: infrastructure/bootstrap/${{ inputs.environment }}
 
       - name: Terraform Plan - Create Remote State Infra
         run: terraform plan
