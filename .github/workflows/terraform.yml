@@ -40,7 +40,7 @@ jobs:
       id: ssh
       run: |
         ssh-keygen -y -f ~/vm/.ssh/id_rsa >     ~/vm/.ssh/id_rsa.pub
-        SSH_PUBLIC_KEY=$(cat ~/vm/.ssh/    id_rsa.pub)
+        SSH_PUBLIC_KEY=$(cat ~/vm/.ssh/id_rsa.pub)
         echo "ssh_public_key=$SSH_PUBLIC_KEY" >>     "$GITHUB_OUTPUT"
         echo     "TF_VAR_ssh_public_key=$SSH_PUBLIC_KEY" >>     "$GITHUB_ENV"
 
