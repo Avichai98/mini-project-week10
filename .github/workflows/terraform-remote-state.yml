@@ -49,15 +49,33 @@ jobs:
         run: terraform init
         working-directory: infrastructure/bootstrap/${{ inputs.environment }}
 
-      - name: Terraform Import RG (if not exists)
+      - name: Terraform Imports (if not in state)
         run: |
+          echo "Checking if Resource Group is in state..."
           if terraform state list | grep -q "azurerm_resource_group.rg"; then
-            echo "Resource group already in state - skipping import."
+            echo "Resource Group already in state"
           else
-            echo "Importing resource group into Terraform state."
+            echo "Importing Resource Group..."
             terraform import azurerm_resource_group.rg "/subscriptions/${{ env.ARM_SUBSCRIPTION_ID }}/resourceGroups/remote_state_RG_${{ inputs.environment }}"
           fi
+
+          echo "Checking if Storage Account is in state..."
+          if terraform state list | grep -q "azurerm_storage_account.sa"; then
+            echo "Storage Account already in state"
+          else
+            echo "Importing Storage Account..."
+            terraform import azurerm_storage_account.sa "/subscriptions/${{ env.ARM_SUBSCRIPTION_ID }}/resourceGroups/remote_state_RG_${{ inputs.environment }}/providers/Microsoft.Storage/storageAccounts/avichai98sa${{ inputs.environment }}"
+          fi
+
+          echo "Checking if Storage Container is in state..."
+          if terraform state list | grep -q "azurerm_storage_container.terraform"; then
+            echo "Storage Container already in state"
+          else
+            echo "Importing Storage Container..."
+            terraform import azurerm_storage_container.terraform "https://avichai98sadev.blob.core.windows.net/remotecontainer${{ inputs.environment }}"
+          fi
         working-directory: infrastructure/bootstrap/${{ inputs.environment }}
+
 
       - name: Terraform Plan - Create Remote State Infra
         run: terraform plan
