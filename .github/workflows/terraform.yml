@@ -105,3 +105,7 @@ jobs:
     - name: Set Public IP Output
       run: |
         echo "public_ip_address=${{ steps.tf_outputs.outputs.public_ip_address }}" >> $GITHUB_OUTPUT
+
+    outputs:
+      ssh_public_key: ${{ steps.ssh.outputs.ssh_public_key }}
+      public_ip_address: ${{ steps.tf_outputs.outputs.public_ip_address }}
