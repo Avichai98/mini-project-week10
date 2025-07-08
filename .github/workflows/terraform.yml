@@ -101,6 +101,7 @@ jobs:
       run: |
         echo "resource_group_name=$(terraform output -raw resource_group_name)" >> $GITHUB_ENV
         echo "vm_name=$(terraform output -raw vm_name)" >> $GITHUB_ENV
+      working-directory: infrastructure/${{ inputs.environment }}
 
     - name: Get public IP using Azure CLI
       run: |
