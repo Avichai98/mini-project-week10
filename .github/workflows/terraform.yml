@@ -99,8 +99,8 @@ jobs:
     - name: Get resource group and VM name from Terraform outputs
       id: get_outputs
       run: |
-        echo "resource_group_name=$(terraform output -raw resource_group_name)" >> $GITHUB_ENV
-        echo "vm_name=$(terraform output -raw vm_name)" >> $GITHUB_ENV
+        echo "resource_group_name=$(terraform output -raw resource_group_name 2>/dev/null)" >> $GITHUB_ENV
+        echo "vm_name=$(terraform output -raw vm_name 2>/dev/null)" >> $GITHUB_ENV
       working-directory: infrastructure/${{ inputs.environment }}
 
     - name: Get public IP using Azure CLI
