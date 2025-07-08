@@ -30,19 +30,18 @@ jobs:
 
       - name: Install frontend dependencies
         run: npm ci
-        
-        working-directory: frontend
+        working-directory: app/frontend
 
       - name: Install ESLint
         run: npm install -g eslint
 
       - name: Run ESLint
         run: npx eslint .
-        working-directory: frontend
+        working-directory: app/frontend
 
       - name: Serve frontend for testing
         run: |
           npm start &
           sleep 3
           curl -I http://localhost:3000
-        working-directory: frontend
+        working-directory: app/frontend

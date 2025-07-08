@@ -32,11 +32,11 @@ jobs:
       - name: Run lint (Flake8)
         run: |
           pip install flake8
-          flake8 backend
+          flake8 app/backend
 
       - name: Run backend tests
         run: |
-          pytest backend/tests | tee test-results.log || true
+          pytest app/backend/tests | tee test-results.log || true
           echo "Build finished successfully at $(date)" >> test-results.log
 
       - name: Upload test results
