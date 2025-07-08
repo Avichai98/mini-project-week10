@@ -30,14 +30,14 @@ jobs:
     - name: Setup SSH key
       run: |
         mkdir -p ~/vm/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/vm/.ssh/id_rsa
-        chmod 600 ~/vm/.ssh/id_rsa
-        ssh-keyscan -H ${{ inputs.public_ip_address }} >> ~/vm/.ssh/known_hosts
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ inputs.public_ip_address }} >> ~/.ssh/known_hosts
 
     - name: Copy script and app to VM
       run: |
-        scp -i ~/vm/.ssh/id_rsa scripts/deployment.sh ${{ secrets.AZURE_USER }}@${{ inputs.public_ip_address }}:/home/${{ secrets.AZURE_USER }}/
-        scp -i ~/vm/.ssh/id_rsa -r ./app ${{ secrets.AZURE_USER }}@${{ inputs.public_ip_address }}:/home/${{ secrets.AZURE_USER }}/
+        scp -i ~/.ssh/id_rsa scripts/deployment.sh ${{ secrets.AZURE_USER }}@${{ inputs.public_ip_address }}:/home/${{ secrets.AZURE_USER }}/
+        scp -i ~/.ssh/id_rsa -r ./app ${{ secrets.AZURE_USER }}@${{ inputs.public_ip_address }}:/home/${{ secrets.AZURE_USER }}/
 
     - name: Run deployment.sh on VM
       run: |
