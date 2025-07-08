@@ -29,7 +29,7 @@ variable "storage_account_name" {
 variable "container_name" {
   description = "The name of the container for the Terraform backend."
   type        = string
-  default     = "terraformdev"
+  default     = "remotecontainerdev"
 }
 
 variable "tags" {

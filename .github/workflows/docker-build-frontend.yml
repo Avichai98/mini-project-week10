@@ -28,7 +28,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/myapp-frontend:${{ inputs.tag }} ./frontend
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/myapp-frontend:${{ inputs.tag }} ./app/frontend
 
       - name: Push Docker image
         run: |

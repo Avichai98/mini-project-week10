@@ -37,20 +37,21 @@ jobs:
   terraform_remote-state:
     uses: ./.github/workflows/terraform-remote-state.yml
     with:
-      environment: ${{ inputs.environment }}
+      environment: ${{ github.event.inputs.environment || 'dev' }}
     secrets: inherit
 
   terraform:
     uses: ./.github/workflows/terraform.yml
     with:
-      environment: ${{ inputs.environment }}
+      environment: ${{ github.event.inputs.environment || 'dev' }}
     secrets: inherit
 
   deploy:
+    needs: [terraform]
     uses: ./.github/workflows/deploy-app.yml
     with:
       public_ip: ${{ needs.terraform.outputs.public_ip }}
-      environment: ${{ inputs.environment }}
+      environment: ${{ github.event.inputs.environment || 'dev' }}
     secrets: inherit
 
   backend-notify:

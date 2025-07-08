@@ -14,6 +14,12 @@ variable "resource_group_name" {
   default     = "mini_project_RG_dev"
 }
 
+variable "vm_name" {
+  description = "The name of the virtual machine."
+  type        = string
+  default     = "devVM"
+}
+
 variable "ssh_public_key" {
   description = "SSH public key for admin user"
   type        = string

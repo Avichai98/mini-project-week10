@@ -31,6 +31,7 @@ module "virtual_machine" {
   source              = "../modules/virtual_machine"
   location            = module.resource_group.location
   resource_group_name = var.resource_group_name
+  vm_name             = var.vm_name
   nic_id              = module.network.nic_id
   public_ip           = module.network.public_ip_address
   ssh_public_key      = var.ssh_public_key

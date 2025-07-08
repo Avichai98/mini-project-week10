@@ -29,7 +29,6 @@ variable "vm_size" {
 variable "vm_name" {
   description = "The name of the virtual machine."
   type        = string
-  default     = "miniProjectVM"
 }
 
 variable "resource_group_name" {
