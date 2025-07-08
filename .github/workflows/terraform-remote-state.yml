@@ -49,47 +49,49 @@ jobs:
         run: terraform init
         working-directory: infrastructure/bootstrap/${{ inputs.environment }}
 
-      - name: Terraform Imports (if not in state and resource exists)
+      - name: Terraform Import Resources If Exist
         run: |
-          echo "Checking if Resource Group is in state..."
-          if terraform state list | grep -q "azurerm_resource_group.rg"; then
-            echo "Resource Group already in state"
-          else
-            echo "Checking if Resource Group exists in Azure..."
-            if az group show --name remote_state_RG_${{ inputs.environment }} >/dev/null 2>&1; then
-             echo "Importing Resource Group..."
+          echo "Checking if RG exists in Azure..."
+          if az group show --name "remote_state_RG_${{ inputs.environment }}" --output none 2>/dev/null; then
+            if ! terraform state list | grep -q "azurerm_resource_group.rg"; then
+              echo "Importing Resource Group..."
               terraform import azurerm_resource_group.rg "/subscriptions/${{ env.ARM_SUBSCRIPTION_ID }}/resourceGroups/remote_state_RG_${{ inputs.environment }}"
             else
-              echo "Resource Group does not exist in Azure, skipping import."
+              echo "Resource Group already in state."
             fi
+          else
+            echo "Resource Group not found in Azure - skipping import."
           fi
 
-          echo "Checking if Storage Account is in state..."
-          if terraform state list | grep -q "azurerm_storage_account.sa"; then
-            echo "Storage Account already in state"
-          else
-            echo "Checking if Storage Account exists in Azure..."
-            if az storage account show --name avichai98sa${{ inputs.environment }} --resource-group remote_state_RG_${{ inputs.environment }} >/dev/null 2>&1; then
+          echo "Checking if Storage Account exists..."
+          if az storage account show --name "avichai98sa${{ inputs.environment }}" --resource-group "remote_state_RG_${{ inputs.environment }}" --output none 2>/dev/null; then
+            if ! terraform state list | grep -q "azurerm_storage_account.sa"; then
               echo "Importing Storage Account..."
               terraform import azurerm_storage_account.sa "/subscriptions/${{ env.ARM_SUBSCRIPTION_ID }}/resourceGroups/remote_state_RG_${{ inputs.environment }}/providers/Microsoft.Storage/storageAccounts/avichai98sa${{ inputs.environment }}"
             else
-              echo "Storage Account does not exist in Azure, skipping import."
+              echo "Storage Account already in state."
             fi
+          else
+            echo "Storage Account not found - skipping import."
           fi
 
-          echo "Checking if Storage Container is in state..."
-          if terraform state list | grep -q "azurerm_storage_container.terraform"; then
-            echo "Storage Container already in state"
-          else
-            echo "Checking if Storage Container exists in Azure..."
-            if az storage container exists --account-name avichai98sa${{ inputs.environment }} --name remotecontainer${{ inputs.environment }} --auth-mode login --output tsv | grep -q true; then
+          echo "Checking if Storage Container exists..."
+          if az storage container show \
+              --name "remotecontainer${{ inputs.environment }}" \
+              --account-name "avichai98sa${{ inputs.environment }}" \
+              --auth-mode login \
+              --output none 2>/dev/null; then
+            if ! terraform state list | grep -q "azurerm_storage_container.terraform"; then
               echo "Importing Storage Container..."
               terraform import azurerm_storage_container.terraform "https://avichai98sa${{ inputs.environment }}.blob.core.windows.net/remotecontainer${{ inputs.environment }}"
             else
-              echo "Storage Container does not exist in Azure, skipping import."
+              echo "Storage Container already in state."
             fi
+          else
+            echo "Storage Container not found - skipping import."
           fi
         working-directory: infrastructure/bootstrap/${{ inputs.environment }}
+
 
       - name: Terraform Plan - Create Remote State Infra
         run: terraform plan
