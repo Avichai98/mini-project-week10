@@ -55,6 +55,14 @@ jobs:
       environment: ${{ github.event.inputs.environment || 'dev' }}
     secrets: inherit
 
+  healthcheck:
+    needs: [deploy]
+    uses: ./.github/workflows/healthcheck.yml
+    with:
+      public_ip_address: ${{ needs.deploy.outputs.public_ip_address }}
+      environment: ${{ github.event.inputs.environment || 'dev' }}
+    secrets: inherit
+
   backend-notify:
     needs: [backend-test, deploy]
     if: always()

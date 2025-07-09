@@ -1,0 +1,46 @@
+name: healthcheck
+
+on:
+  workflow_call:
+    inputs:
+      public_ip_address:
+        required: true
+        type: string
+      environment:
+        required: true
+        type: string
+    secrets:
+      SLACK_WEBHOOK_URL:
+        required: true
+      DISCORD_WEBHOOK_URL:
+        required: true
+
+jobs:
+  healthcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Check Backend Health
+        run: |
+          echo "Checking backend health at http://${{ inputs.public_ip_address }}:3000"
+          chmod +x ./scripts/healthcheck.sh
+          ./scripts/healthcheck.sh ${{ inputs.public_ip_address }} 3000
+
+      - name: Notify Discord
+        if: failure()
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d "{\"content\": \"Healthcheck failed on ${{ inputs.environment }} at http://${{ inputs.public_ip_address }}:3000\"}" \
+          ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+      - name: Notify Slack
+        if: failure()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data "{\"text\":\"Healthcheck failed on ${{ inputs.environment }} at http://${{ inputs.public_ip_address }}:3000\"}" \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
+
+          
+
