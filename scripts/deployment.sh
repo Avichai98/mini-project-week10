@@ -8,7 +8,7 @@ exec > >(tee -a "$log_file") 2>&1
 install_and_run_app() {
   echo "🔧 Connecting and setting up Docker..."
 
-  if ! command -v docker &>/dev/null; then
+  if ! command -v docker &>/dev/null || ! docker compose version &>/dev/null; then
     echo "Installing Docker..."
     sudo apt-get update
     sudo apt-get install -y ca-certificates curl gnupg
@@ -21,12 +21,6 @@ install_and_run_app() {
     sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
   else
     echo "Docker is already installed."
-  fi
-
-  echo "Checking Docker Compose..."
-  if ! docker compose version &>/dev/null; then
-    echo "Docker Compose is missing or broken!"
-    exit 1
   fi
 
   echo "Running Docker Compose..."
