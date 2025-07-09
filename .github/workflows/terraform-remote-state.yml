@@ -46,7 +46,7 @@ jobs:
           echo "TF_VAR_client_secret=$(jq -r .clientSecret sp.json)" >> $GITHUB_ENV
 
       - name: Terraform Init
-        run: terraform init
+        run: terraform init | tee tf-remote_state-init.log
         working-directory: infrastructure/bootstrap/${{ inputs.environment }}
 
       - name: Terraform Import Resources If Exist
@@ -94,9 +94,18 @@ jobs:
 
 
       - name: Terraform Plan - Create Remote State Infra
-        run: terraform plan
+        run: terraform plan | tee tf-remote-state-plan.log
         working-directory: infrastructure/bootstrap/${{ inputs.environment }}
 
       - name: Terraform Apply - Create Remote State Infra
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve | tee tf-remote_state-apply.log
         working-directory: infrastructure/bootstrap/${{ inputs.environment }}
+
+      - name: Upload logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-logs
+          path: |
+            tf-remote_state-init.log
+            tf-remote-state-plan.log
+            tf-remote_state-apply.log

@@ -56,7 +56,7 @@ jobs:
     secrets: inherit
 
   healthcheck:
-    needs: [deploy]
+    needs: [terraform, deploy]
     uses: ./.github/workflows/healthcheck.yml
     with:
       public_ip_address: ${{ needs.terraform.outputs.public_ip_address }}
@@ -82,3 +82,7 @@ jobs:
       test_status: ${{ needs.frontend-test.result }}
       build_status: ${{ needs.frontend-docker-build.result }}
     secrets: inherit
+  
+  generate-deployment-log:
+    needs: [terraform, deploy, healthcheck]
+    uses: ./.github/workflows/generate-deployment-log.yml

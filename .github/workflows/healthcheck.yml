@@ -42,6 +42,3 @@ jobs:
           curl -X POST -H 'Content-type: application/json' \
           --data "{\"text\":\"Healthcheck failed on ${{ inputs.environment }} at http://${{ inputs.public_ip_address }}:3000\"}" \
           ${{ secrets.SLACK_WEBHOOK_URL }}
-
-          
-

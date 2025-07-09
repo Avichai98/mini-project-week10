@@ -69,7 +69,7 @@ jobs:
         echo "TF_VAR_client_secret=$(jq -r .clientSecret sp.json)" >> $GITHUB_ENV
 
     - name: Terraform Init
-      run: terraform init
+      run: terraform init | tee tf-init.log
       working-directory: infrastructure/${{ inputs.environment }}
 
     - name: Terraform Import RG if exists in Azure
@@ -89,11 +89,11 @@ jobs:
       working-directory: infrastructure/${{ inputs.environment }}
       
     - name: Terraform Plan
-      run: terraform plan
+      run: terraform plan | tee tf-plan.log
       working-directory: infrastructure/${{ inputs.environment }}
 
     - name: Terraform Apply
-      run: terraform apply -auto-approve
+      run: terraform apply -auto-approve | tee tf-apply.log
       working-directory: infrastructure/${{ inputs.environment }}
 
     - name: Get Terraform Outputs
@@ -105,6 +105,15 @@ jobs:
     - name: Set Public IP Output
       run: |
         echo "public_ip_address=${{ steps.tf_outputs.outputs.public_ip_address }}" >> $GITHUB_OUTPUT
+    
+    - name: Upload logs
+      uses: actions/upload-artifact@v4
+      with:
+        name: terraform-logs
+        path: |
+          tf-init.log
+          tf-plan.log
+          tf-apply.log
 
     outputs:
       ssh_public_key: ${{ steps.ssh.outputs.ssh_public_key }}

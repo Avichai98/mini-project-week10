@@ -1,0 +1,36 @@
+name: Generate Deployment Log
+
+on:
+  workflow_call:
+
+jobs:
+  build_log:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Combine logs into deployment_log.md
+        run: |
+          echo "# Deployment Log" > deployment_log.md
+          echo "" >> deployment_log.md
+          echo "This file includes logs from Terraform, deployment script, backend tests, and healthcheck." >> deployment_log.md
+          echo "" >> deployment_log.md
+
+          for log in tf-init.log tf-apply.log tf-remote_state-init.log tf-remote_state-plan.log tf-remote_state-apply deploy.log test-results.log; do
+            if [ -f "$log" ]; then
+              echo "---" >> deployment_log.md
+              echo "## ${log}" >> deployment_log.md
+              echo "" >> deployment_log.md
+              echo '```log' >> deployment_log.md
+              cat "$log" >> deployment_log.md
+              echo '```' >> deployment_log.md
+              echo "" >> deployment_log.md
+            fi
+          done
+
+      - name: Upload deployment_log.md
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-log-md
+          path: deployment_log.md
