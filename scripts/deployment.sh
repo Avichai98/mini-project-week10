@@ -8,7 +8,7 @@ exec > >(tee -a "$log_file") 2>&1
 install_and_run_app() {
   echo "🔧 Connecting and setting up Docker..."
 
-  if ! command -v docker &>/dev/null || ! docker compose version &>/dev/null; then
+  if ! command -v docker &>/dev/null; then
     echo "Installing Docker..."
     sudo apt-get update
     sudo apt-get install -y ca-certificates curl gnupg
@@ -17,10 +17,17 @@ install_and_run_app() {
     echo \
       "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
       $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
-    sudo apt-get update
-    sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
   else
     echo "Docker is already installed."
+  fi
+
+  if ! docker compose version &>/dev/null; then
+    echo "Installing Docker Compose..."
+     sudo apt-get update
+    sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    sudo apt-get install -y docker-compose-plugin
+  else
+    echo "Docker Compose is already installed."
   fi
 
   echo "Running Docker Compose..."
