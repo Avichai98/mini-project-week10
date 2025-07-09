@@ -19,8 +19,7 @@ logging.basicConfig(level=logging.INFO)
 
 @app.before_request
 def log_request_info():
-    app.logger.info(f"{request.method} {request.path}")
-     from {request.remote_addr}")
+    app.logger.info(f"{request.method} {request.path} from {request.remote_addr}")
 
 
 @app.route("/names", methods=["GET"])
