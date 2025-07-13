@@ -101,6 +101,12 @@ jobs:
         run: terraform apply -auto-approve | tee tf-remote_state-apply.log
         working-directory: infrastructure/bootstrap/${{ inputs.environment }}
 
+      - name: Move logs to root
+        run: |
+          cp infrastructure/bootstrap/${{ inputs.environment }}/tf-remote_state-init.log .
+          cp infrastructure/bootstrap/${{ inputs.environment }}/tf-remote-state-plan.log .
+          cp infrastructure/bootstrap/${{ inputs.environment }}/tf-remote_state-apply.log .
+
       - name: Upload logs
         uses: actions/upload-artifact@v4
         with:

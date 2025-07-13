@@ -43,6 +43,10 @@ jobs:
       run: |
         ssh -i ~/.ssh/id_rsa ${{ secrets.AZURE_USER }}@${{ inputs.public_ip_address }} "chmod +x ~/deployment.sh && ~/deployment.sh > deploy.log 2>&1" 
 
+    - name: Fetch deploy.log from VM
+      run: |
+        scp -i ~/.ssh/id_rsa ${{ secrets.AZURE_USER }}@${{ inputs.public_ip_address }}:/home/${{ secrets.AZURE_USER }}/deploy.log .
+
     - name: Upload Deployment Logs
       uses: actions/upload-artifact@v4
       with:

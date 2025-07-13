@@ -106,6 +106,12 @@ jobs:
       run: |
         echo "public_ip_address=${{ steps.tf_outputs.outputs.public_ip_address }}" >> $GITHUB_OUTPUT
     
+    - name: Move logs to root
+      run: |
+        cp infrastructure/${{ inputs.environment }}/tf-init.log .
+        cp infrastructure/${{ inputs.environment }}/tf-plan.log .
+        cp infrastructure/${{ inputs.environment }}/tf-apply.log .
+        
     - name: Upload logs
       uses: actions/upload-artifact@v4
       with:

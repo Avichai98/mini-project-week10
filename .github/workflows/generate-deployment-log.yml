@@ -32,7 +32,7 @@ jobs:
           echo "This file includes logs from Terraform, deployment script, backend tests, and healthcheck." >> deployment_log.md
           echo "" >> deployment_log.md
 
-          for log in tf-init.log tf-apply.log tf-remote_state-init.log tf-remote_state-plan.log tf-remote_state-apply.log deploy.log test-results.log; do
+          for log in tf-init.log tf-plan.log tf-apply.log tf-remote_state-init.log tf-remote_state-plan.log tf-remote_state-apply.log deploy.log test-results.log; do
             if [ -f "$log" ]; then
               echo "---" >> deployment_log.md
               echo "## ${log}" >> deployment_log.md
