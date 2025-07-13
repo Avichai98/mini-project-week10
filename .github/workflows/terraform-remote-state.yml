@@ -110,7 +110,7 @@ jobs:
       - name: Upload logs
         uses: actions/upload-artifact@v4
         with:
-          name: terraform-logs
+          name: terraform-remote-state-logs
           path: |
             tf-remote_state-init.log
             tf-remote-state-plan.log
