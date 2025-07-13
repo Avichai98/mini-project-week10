@@ -10,6 +10,11 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      - name: Download Terraform remote state logs
+        uses: actions/download-artifact@v4
+        with:
+          name: terraform-remote-state-logs
+
       - name: Download Terraform Logs
         uses: actions/download-artifact@v4
         with:
@@ -23,7 +28,7 @@ jobs:
       - name: Download Test Results
         uses: actions/download-artifact@v4
         with:
-          name: test-results
+          name: backend-test-results-python
 
       - name: Combine logs into deployment_log.md
         run: |
