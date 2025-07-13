@@ -22,14 +22,8 @@ jobs:
   frontend-test:
     uses: ./.github/workflows/frontend-test.yml
   
-  backend-docker-build:
-    uses: ./.github/workflows/docker-build-backend.yml
-    with:
-      tag: ${{ github.sha }}
-    secrets: inherit
-
-  frontend-docker-build:
-    uses: ./.github/workflows/docker-build-frontend.yml
+  app-docker-build:
+    uses: ./.github/workflows/docker-build-app.yml
     with:
       tag: ${{ github.sha }}
     secrets: inherit

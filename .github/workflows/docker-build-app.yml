@@ -1,0 +1,49 @@
+name: Build and Push Docker Images
+
+on:
+  workflow_dispatch: # Allows manual triggering of the workflow
+  workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: string
+        description: "Tag for the Docker image, e.g., 'v1.0.0'"
+        default: "latest"
+    secrets:
+      DOCKERHUB_USERNAME:
+        required: true
+      DOCKERHUB_TOKEN:
+        required: true
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Set variables
+        id: vars
+        run: |
+          echo "TAG=${{ inputs.tag }}" >> $GITHUB_ENV
+          echo "USERNAME=${{ secrets.DOCKERHUB_USERNAME }}" >> $GITHUB_ENV
+
+      - name: Build and tag backend image
+        run: |
+          docker build -t $USERNAME/myapp-backend:${TAG} -t $USERNAME/myapp-backend:latest ./app/backend
+
+      - name: Build and tag frontend image
+        run: |
+          docker build -t $USERNAME/myapp-frontend:${TAG} -t $USERNAME/myapp-frontend:latest ./app/frontend
+
+      - name: Push backend images
+        run: |
+          docker push $USERNAME/myapp-backend:${TAG}
+          docker push $USERNAME/myapp-backend:latest
+
+      - name: Push frontend images
+        run: |
+          docker push $USERNAME/myapp-frontend:${TAG}
+          docker push $USERNAME/myapp-frontend:latest

@@ -1,10 +1,7 @@
-version: '3.9'
 
 services:
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: avichai98/myapp-backend:latest  
     container_name: my_backend
     ports:
       - "8000:8000"
@@ -17,8 +14,7 @@ services:
       - mynet
 
   frontend:
-    build:
-      context: ./frontend
+    image: avichai98/myapp-frontend:latest
     container_name: my_frontend
     ports:
       - "3000:3000"

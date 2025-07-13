@@ -33,7 +33,7 @@ install_and_run_app() {
   echo "Running Docker Compose..."
   cd /home/adminuser/app
   sudo docker compose down || true
-  sudo docker compose up -d --build
+  sudo docker compose up -d
 }
 
 main() {

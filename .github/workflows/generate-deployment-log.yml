@@ -10,6 +10,21 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      - name: Download Terraform Logs
+        uses: actions/download-artifact@v4
+        with:
+          name: terraform-logs
+
+      - name: Download Deployment Logs
+        uses: actions/download-artifact@v4
+        with:
+          name: deployment-logs
+
+      - name: Download Test Results
+        uses: actions/download-artifact@v4
+        with:
+          name: test-results
+
       - name: Combine logs into deployment_log.md
         run: |
           echo "# Deployment Log" > deployment_log.md
@@ -17,7 +32,7 @@ jobs:
           echo "This file includes logs from Terraform, deployment script, backend tests, and healthcheck." >> deployment_log.md
           echo "" >> deployment_log.md
 
-          for log in tf-init.log tf-apply.log tf-remote_state-init.log tf-remote_state-plan.log tf-remote_state-apply deploy.log test-results.log; do
+          for log in tf-init.log tf-apply.log tf-remote_state-init.log tf-remote_state-plan.log tf-remote_state-apply.log deploy.log test-results.log; do
             if [ -f "$log" ]; then
               echo "---" >> deployment_log.md
               echo "## ${log}" >> deployment_log.md
@@ -26,6 +41,8 @@ jobs:
               cat "$log" >> deployment_log.md
               echo '```' >> deployment_log.md
               echo "" >> deployment_log.md
+            else
+              echo "Log file $log not found" >> deployment_log.md
             fi
           done
 

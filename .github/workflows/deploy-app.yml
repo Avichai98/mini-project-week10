@@ -37,7 +37,7 @@ jobs:
     - name: Copy script and app to VM
       run: |
         scp -i ~/.ssh/id_rsa scripts/deployment.sh ${{ secrets.AZURE_USER }}@${{ inputs.public_ip_address }}:/home/${{ secrets.AZURE_USER }}/
-        scp -i ~/.ssh/id_rsa -r ./app ${{ secrets.AZURE_USER }}@${{ inputs.public_ip_address }}:/home/${{ secrets.AZURE_USER }}/
+        scp -i ~/.ssh/id_rsa -r ./app/docker-compose.yml ${{ secrets.AZURE_USER }}@${{ inputs.public_ip_address }}:/home/${{ secrets.AZURE_USER }}/
 
     - name: Run deployment.sh on VM
       run: |
