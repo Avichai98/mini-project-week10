@@ -6,7 +6,7 @@ exec > >(tee -a "$log_file") 2>&1
 
 # install Docker if not installed, then start containers
 install_and_run_app() {
-  echo "🔧 Connecting and setting up Docker..."
+  echo "Connecting and setting up Docker..."
 
   if ! command -v docker &>/dev/null; then
     echo "Installing Docker..."
@@ -31,7 +31,7 @@ install_and_run_app() {
   fi
 
   echo "Running Docker Compose..."
-  cd /home/adminuser/app
+  cd /home/adminuser
   sudo docker compose down || true
   sudo docker compose up -d
 }
